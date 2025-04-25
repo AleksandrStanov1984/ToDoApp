@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using Todo.Enums;
-using TDTaskStatus = Todo.Enums.PriorityToDo;
+using TDTaskPriority = Todo.Enums.PriorityToDo;
 using ToDo = Todo.ToDo;
 
 namespace ToDoApp.Forms;
@@ -24,25 +24,28 @@ public partial class CreateOrUpdateToDo_Form : Form
 
         todo.NewTask = _newOrOldTask;
 
-        comboBoxPriority.DataSource = Enum.GetValues(typeof(TDTaskStatus));
+        comboBoxPriority.DataSource = Enum.GetValues(typeof(TDTaskPriority));
     }
 
     private void CreateNewToDo_Form_Load(object sender, EventArgs e)
     {
-        dateTimePickerEvent.MinDate = DateTime.Now;
+        dateTimePickerEvent.MinDate = DateTime.Now; /// TODO + 8 hours
     }
 
     private void ButtonSaveNewToDo_Click(object sender, EventArgs e)
     {
-        if (comboBoxPriority.SelectedItem is TDTaskStatus selected)
+        if (comboBoxPriority.SelectedItem is TDTaskPriority selected)
         {
+            // Получаем выбранный элемент из ComboBox (предположим, что это значение как строка или целое число)
+            int selectedPriorityInt = (int)comboBoxPriority.SelectedItem;  
+
             try
             {
                 todo.CreateAddToDoEvent
                     (
                     textBoxThema.Text,
-                    textBoxDescription.Text, 
-                    (PriorityToDo)comboBoxPriority.SelectedItem,
+                    textBoxDescription.Text,
+                    selectedPriorityInt,
                     dateTimePickerEvent.Value
                     );
             }

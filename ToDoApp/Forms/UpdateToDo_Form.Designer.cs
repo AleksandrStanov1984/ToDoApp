@@ -29,27 +29,21 @@
         private void InitializeComponent()
         {
             groupBoxUpdateTask = new GroupBox();
-            vScrollBar1 = new VScrollBar();
             BtnCloseUpdateForm = new Button();
             labelName = new Label();
-            groupBoxUpdateTask.SuspendLayout();
+            groupBoxSort = new GroupBox();
+            labelPriority = new Label();
+            comboBoxPrioritySort = new ComboBox();
+            groupBoxSort.SuspendLayout();
             SuspendLayout();
             // 
             // groupBoxUpdateTask
             // 
-            groupBoxUpdateTask.Controls.Add(vScrollBar1);
-            groupBoxUpdateTask.Location = new Point(22, 41);
+            groupBoxUpdateTask.Location = new Point(22, 109);
             groupBoxUpdateTask.Name = "groupBoxUpdateTask";
-            groupBoxUpdateTask.Size = new Size(753, 372);
+            groupBoxUpdateTask.Size = new Size(766, 304);
             groupBoxUpdateTask.TabIndex = 1;
             groupBoxUpdateTask.TabStop = false;
-            // 
-            // vScrollBar1
-            // 
-            vScrollBar1.Location = new Point(733, 0);
-            vScrollBar1.Name = "vScrollBar1";
-            vScrollBar1.Size = new Size(17, 389);
-            vScrollBar1.TabIndex = 0;
             // 
             // BtnCloseUpdateForm
             // 
@@ -71,17 +65,47 @@
             labelName.Size = new Size(0, 25);
             labelName.TabIndex = 3;
             // 
+            // groupBoxSort
+            // 
+            groupBoxSort.Controls.Add(labelPriority);
+            groupBoxSort.Controls.Add(comboBoxPrioritySort);
+            groupBoxSort.Location = new Point(36, 12);
+            groupBoxSort.Name = "groupBoxSort";
+            groupBoxSort.Size = new Size(732, 66);
+            groupBoxSort.TabIndex = 4;
+            groupBoxSort.TabStop = false;
+            groupBoxSort.Text = "Сортировка";
+            // 
+            // labelPriority
+            // 
+            labelPriority.AutoSize = true;
+            labelPriority.Location = new Point(37, 19);
+            labelPriority.Name = "labelPriority";
+            labelPriority.Size = new Size(90, 15);
+            labelPriority.TabIndex = 1;
+            labelPriority.Text = "По приоритету";
+            // 
+            // comboBoxPrioritySort
+            // 
+            comboBoxPrioritySort.FormattingEnabled = true;
+            comboBoxPrioritySort.Location = new Point(22, 37);
+            comboBoxPrioritySort.Name = "comboBoxPrioritySort";
+            comboBoxPrioritySort.Size = new Size(121, 23);
+            comboBoxPrioritySort.TabIndex = 0;
+            // 
             // UpdateToDo_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(groupBoxSort);
             Controls.Add(labelName);
             Controls.Add(BtnCloseUpdateForm);
             Controls.Add(groupBoxUpdateTask);
             Name = "UpdateToDo_Form";
             Text = "Обновить событие";
-            groupBoxUpdateTask.ResumeLayout(false);
+            groupBoxSort.ResumeLayout(false);
+            groupBoxSort.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -89,8 +113,10 @@
         #endregion
 
         private GroupBox groupBoxUpdateTask;
-        private VScrollBar vScrollBar1;
         private Button BtnCloseUpdateForm;
         private Label labelName;
+        private GroupBox groupBoxSort;
+        private Label labelPriority;
+        private ComboBox comboBoxPrioritySort;
     }
 }

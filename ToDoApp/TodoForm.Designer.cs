@@ -128,7 +128,7 @@
             BtnUpdateToday.Name = "BtnUpdateToday";
             BtnUpdateToday.Size = new Size(75, 23);
             BtnUpdateToday.TabIndex = 0;
-            BtnUpdateToday.Tag = "";
+            BtnUpdateToday.Tag = "1";
             BtnUpdateToday.Text = "Update";
             BtnUpdateToday.UseVisualStyleBackColor = true;
             BtnUpdateToday.Click += BtnUpdateToDo_Click;
@@ -272,7 +272,7 @@
             BtnUpdateInPlans.Name = "BtnUpdateInPlans";
             BtnUpdateInPlans.Size = new Size(75, 23);
             BtnUpdateInPlans.TabIndex = 0;
-            BtnUpdateInPlans.Tag = "";
+            BtnUpdateInPlans.Tag = "2";
             BtnUpdateInPlans.Text = "Update";
             BtnUpdateInPlans.UseVisualStyleBackColor = true;
             BtnUpdateInPlans.Click += BtnUpdateToDo_Click;
@@ -416,7 +416,7 @@
             BtnUpdateClosed.Name = "BtnUpdateClosed";
             BtnUpdateClosed.Size = new Size(75, 23);
             BtnUpdateClosed.TabIndex = 0;
-            BtnUpdateClosed.Tag = "";
+            BtnUpdateClosed.Tag = "4";
             BtnUpdateClosed.Text = "Update";
             BtnUpdateClosed.UseVisualStyleBackColor = true;
             BtnUpdateClosed.Click += BtnUpdateToDo_Click;
@@ -560,7 +560,7 @@
             BtnUpdateAll.Name = "BtnUpdateAll";
             BtnUpdateAll.Size = new Size(75, 23);
             BtnUpdateAll.TabIndex = 0;
-            BtnUpdateAll.Tag = "";
+            BtnUpdateAll.Tag = "3";
             BtnUpdateAll.Text = "Update";
             BtnUpdateAll.UseVisualStyleBackColor = true;
             BtnUpdateAll.Click += BtnUpdateToDo_Click;
