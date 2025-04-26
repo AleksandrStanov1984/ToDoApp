@@ -1,6 +1,7 @@
 ﻿using Todo.Enums;
 using System.Data;
 using DbLibrary.Models;
+using ToDoApp.Properties;
 using ToDo = Todo.ToDo;
 using TDTaskPriority = Todo.Enums.PriorityToDo;
 
@@ -12,24 +13,25 @@ namespace ToDoApp.Forms
 
         private readonly int _status;
 
-        public UpdateToDo_Form(int status)
+        public UpdateToDo_Form(ToDo todoInstance, int status)
         {
             InitializeComponent();
 
-            InstallStatusLabel(status);
+            // Сохраняем переданный статус
+            _status = status;
+
+            // Устанавливаем текст статуса в labelName
+            InstallStatusLabel(_status);
 
             // Инициализируем класс ToDo
-            _todo = new ToDo();
+            _todo = todoInstance ?? throw new ArgumentNullException(nameof(todoInstance));
 
             // Проверяем статус задачи
-            if (status < 1 || status > 4)
+            if (_status < 1 || _status > 4)
             {
                 MessageBox.Show("Ошибка: Неверный статус задачи!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
-            // Сохраняем переданный статус
-            _status = status;
 
             // Заполняем ComboBox значениями приоритетов
             comboBoxPrioritySort.DataSource = Enum.GetValues(typeof(TDTaskPriority));
@@ -42,100 +44,141 @@ namespace ToDoApp.Forms
             DisplayGroupedTodosInGroupBox();
         }
 
-        // Метод для отображения задач в groupBox с учетом статуса и сортировкой
         private void DisplayGroupedTodosInGroupBox(List<TodoItem>[] sortedTodos)
         {
-            // Очищаем все старые элементы из groupBox
             groupBoxUpdateTask.Controls.Clear();
 
-            // Создаем панель для прокрутки
-            var scrollPanel = new Panel
+            var scrollPanel = CreateScrollPanel();
+
+            string[] statusHeaders = { "Сегодня", "В планах", "Все (кроме завершённых)", "Завершено" };
+            int yOffset = 10;
+
+            for (int i = 0; i < sortedTodos.Length; i++)
+            {
+                if (!sortedTodos[i].Any()) continue;
+
+                // Add status header
+                var headerLabel = CreateStatusHeaderLabel(statusHeaders[i], yOffset);
+                scrollPanel.Controls.Add(headerLabel);
+                yOffset += headerLabel.Height + 10;
+
+                // Add task boxes
+                foreach (var todo in sortedTodos[i])
+                {
+                    var taskBox = CreateTaskGroupBox(todo, yOffset);
+                    scrollPanel.Controls.Add(taskBox);
+                    yOffset += taskBox.Height + 10;
+                }
+            }
+
+            groupBoxUpdateTask.Controls.Add(scrollPanel);
+        }
+
+        private Panel CreateScrollPanel()
+        {
+            return new Panel
             {
                 AutoScroll = true,
                 Width = groupBoxUpdateTask.Width - 20,
                 Height = groupBoxUpdateTask.Height - 50,
-                Location = new Point(10, 40) // Местоположение панели внутри groupBox
+                Location = new Point(10, 40)
             };
-
-            // Переменная для отступов между элементами
-            int yOffset = 10;
-            int groupBoxHeight = 100;
-            int spacing = 10;
-
-            // Статусные заголовки
-            string[] statusHeaders = { "Сегодня", "В планах", "Все (кроме завершённых)", "Завершено" };
-
-            // Отображаем задачи из отсортированных данных
-            for (int i = 0; i < sortedTodos.Length; i++)
-            {
-                if (sortedTodos[i].Any()) // Если есть задачи для данного статуса
-                {
-                    var headerLabel = new Label
-                    {
-                        Text = statusHeaders[i],
-                        Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                        Location = new Point(10, yOffset),
-                        AutoSize = true
-                    };
-                    scrollPanel.Controls.Add(headerLabel);
-                    yOffset += headerLabel.Height + spacing;
-
-                    foreach (var todo in sortedTodos[i])
-                    {
-                        // Получаем цвета для рамки и фона в зависимости от приоритета
-                        var (borderColor, backgroundColor) = GetPriorityColors(todo.Priority);
-
-                        var taskBox = new GroupBox
-                        {
-                            Text = todo.Title,
-                            Width = scrollPanel.Width - 30,
-                            Height = groupBoxHeight,
-                            Location = new Point(10, yOffset),
-                            Tag = todo.Id,
-                            FlatStyle = FlatStyle.Flat
-                        };
-
-                        taskBox.ForeColor = borderColor;
-                        taskBox.BackColor = backgroundColor;
-
-                        var descriptionLabel = new Label
-                        {
-                            Text = $"Описание: {todo.Description}",
-                            Location = new Point(10, 20),
-                            AutoSize = true
-                        };
-
-                        var updateButton = new Button
-                        {
-                            Text = "Обновить",
-                            Location = new Point(10, 50),
-                            Tag = todo.Id
-                        };
-
-                        var closeButton = new Button
-                        {
-                            Text = "Закрыть",
-                            Location = new Point(100, 50),
-                            Tag = todo.Id
-                        };
-
-                        // Добавляем элементы в taskBox
-                        taskBox.Controls.Add(descriptionLabel);
-                        taskBox.Controls.Add(updateButton);
-                        taskBox.Controls.Add(closeButton);
-
-                        // Добавляем taskBox в scrollPanel
-                        scrollPanel.Controls.Add(taskBox);
-
-                        // Обновляем отступ для следующей задачи
-                        yOffset += groupBoxHeight + spacing;
-                    }
-                }
-            }
-
-            // Добавляем панель с задачами в groupBoxUpdateTask
-            groupBoxUpdateTask.Controls.Add(scrollPanel);
         }
+
+        // Метод для отображения задач в groupBox с учетом статуса и сортировкой
+        //private void DisplayGroupedTodosInGroupBox(List<TodoItem>[] sortedTodos)
+        //{
+        //    // Очищаем все старые элементы из groupBox
+        //    groupBoxUpdateTask.Controls.Clear();
+
+        //    // Создаем панель для прокрутки
+        //    var scrollPanel = new Panel
+        //    {
+        //        AutoScroll = true,
+        //        Width = groupBoxUpdateTask.Width - 20,
+        //        Height = groupBoxUpdateTask.Height - 50,
+        //        Location = new Point(10, 40) // Местоположение панели внутри groupBox
+        //    };
+
+        //    // Переменная для отступов между элементами
+        //    int yOffset = 10;
+        //    int groupBoxHeight = 100;
+        //    int spacing = 10;
+
+        //    // Статусные заголовки
+        //    string[] statusHeaders = { "Сегодня", "В планах", "Все (кроме завершённых)", "Завершено" };
+
+        //    // Отображаем задачи из отсортированных данных
+        //    for (int i = 0; i < sortedTodos.Length; i++)
+        //    {
+        //        if (sortedTodos[i].Any()) // Если есть задачи для данного статуса
+        //        {
+        //            var headerLabel = new Label
+        //            {
+        //                Text = statusHeaders[i],
+        //                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+        //                Location = new Point(10, yOffset),
+        //                AutoSize = true
+        //            };
+        //            scrollPanel.Controls.Add(headerLabel);
+        //            yOffset += headerLabel.Height + spacing;
+
+        //            foreach (var todo in sortedTodos[i])
+        //            {
+        //                // Получаем цвета для рамки и фона в зависимости от приоритета
+        //                var (borderColor, backgroundColor) = GetPriorityColors(todo.Priority);
+
+        //                var taskBox = new GroupBox
+        //                {
+        //                    Text = todo.Title,
+        //                    Width = scrollPanel.Width - 30,
+        //                    Height = groupBoxHeight,
+        //                    Location = new Point(10, yOffset),
+        //                    Tag = todo.Id,
+        //                    FlatStyle = FlatStyle.Flat
+        //                };
+
+        //                taskBox.ForeColor = borderColor;
+        //                taskBox.BackColor = backgroundColor;
+
+        //                var descriptionLabel = new Label
+        //                {
+        //                    Text = $"Описание: {todo.Description}",
+        //                    Location = new Point(10, 20),
+        //                    AutoSize = true
+        //                };
+
+        //                var updateButton = new Button
+        //                {
+        //                    Text = "Обновить",
+        //                    Location = new Point(10, 50),
+        //                    Tag = todo.Id
+        //                };
+
+        //                var closeButton = new Button
+        //                {
+        //                    Text = "Закрыть",
+        //                    Location = new Point(100, 50),
+        //                    Tag = todo.Id
+        //                };
+
+        //                // Добавляем элементы в taskBox
+        //                taskBox.Controls.Add(descriptionLabel);
+        //                taskBox.Controls.Add(updateButton);
+        //                taskBox.Controls.Add(closeButton);
+
+        //                // Добавляем taskBox в scrollPanel
+        //                scrollPanel.Controls.Add(taskBox);
+
+        //                // Обновляем отступ для следующей задачи
+        //                yOffset += groupBoxHeight + spacing;
+        //            }
+        //        }
+        //    }
+
+        //    // Добавляем панель с задачами в groupBoxUpdateTask
+        //    groupBoxUpdateTask.Controls.Add(scrollPanel);
+        //}
 
         // Метод для создания заголовка статуса (Сегодня, В планах и т.д.)
         private Label CreateStatusHeaderLabel(string headerText, int yOffset)
@@ -154,50 +197,72 @@ namespace ToDoApp.Forms
         // Метод для создания TaskBox для каждой задачи
         private GroupBox CreateTaskGroupBox(TodoItem todo, int yOffset)
         {
-            // Создаем GroupBox для задачи
+            var (borderColor, backgroundColor) = GetPriorityColors(todo.Priority);
+
             var taskBox = new GroupBox
             {
                 Text = todo.Title,
-                Width = 500, // Можно настроить под нужды
-                Height = 80,
+                Width = groupBoxUpdateTask.Width - 40,
+                Height = 100,
                 Location = new Point(10, yOffset),
                 Tag = todo.Id,
+                ForeColor = borderColor,
+                BackColor = backgroundColor,
                 FlatStyle = FlatStyle.Flat
             };
 
-            // Получаем цвета в зависимости от приоритета
-            var (borderColor, backgroundColor) = GetPriorityColors(todo.Priority);
-            taskBox.ForeColor = borderColor;
-            taskBox.BackColor = backgroundColor;
-
-            // Создаем метку для описания задачи
-            var descriptionLabel = new Label
-            {
-                Text = $"Описание: {todo.Description}",
-                Location = new Point(10, 20),
-                AutoSize = true
-            };
+            var descriptionLabel = CreateDescriptionLabel(todo.Description);
             taskBox.Controls.Add(descriptionLabel);
+
+            var updateButton = CreateUpdateButton(todo.Id);
+            taskBox.Controls.Add(updateButton);
+
+            var closeButton = CreateCloseButton(todo.Id);
+            taskBox.Controls.Add(closeButton);
 
             return taskBox;
         }
 
-
-        // Метод для получения цветов в зависимости от приоритета
-        private (Color borderColor, Color backgroundColor) GetPriorityColors(int priority)
+        private Label CreateDescriptionLabel(string description)
         {
-            // Определяем цвета в зависимости от приоритета
-            return (priority) switch
+            return new Label
             {
-                (int)PriorityToDo.Low => (Color.Black, Color.DarkGray),
-                (int)PriorityToDo.Medium => (Color.Green, Color.LightGreen),
-                (int)PriorityToDo.High => (Color.Blue, Color.LightBlue),
-                (int)PriorityToDo.Critical => (Color.Red, Color.LightCoral),
-                _ => (Color.Black, Color.DarkGray), // default
+                Text = $"Описание: {description}",
+                Location = new Point(10, 20),
+                AutoSize = true
             };
         }
 
+
+        //// Метод для получения цветов в зависимости от приоритета
+        //private (Color borderColor, Color backgroundColor) GetPriorityColors(int priority)
+        //{
+        //    // Определяем цвета в зависимости от приоритета
+        //    return (priority) switch
+        //    {
+        //        (int)PriorityToDo.Low => (Color.Black, Color.DarkGray),
+        //        (int)PriorityToDo.Medium => (Color.Green, Color.LightGreen),
+        //        (int)PriorityToDo.High => (Color.Blue, Color.LightBlue),
+        //        (int)PriorityToDo.Critical => (Color.Red, Color.LightCoral),
+        //        _ => (Color.Black, Color.DarkGray), // default
+        //    };
+        //}
+
         // Метод для создания кнопки "Обновить"
+
+        private readonly Dictionary<int, (Color borderColor, Color backgroundColor)> _priorityColors = new()
+        {
+            { (int)PriorityToDo.Low, (Color.Black, Color.DarkGray) },
+            { (int)PriorityToDo.Medium, (Color.Green, Color.LightGreen) },
+            { (int)PriorityToDo.High, (Color.Blue, Color.LightBlue) },
+            { (int)PriorityToDo.Critical, (Color.Red, Color.LightCoral) }
+        };
+
+        private (Color borderColor, Color backgroundColor) GetPriorityColors(int priority)
+        {
+            return _priorityColors.ContainsKey(priority) ? _priorityColors[priority] : (Color.Black, Color.DarkGray);
+        }
+
         private Button CreateUpdateButton(int todoId)
         {
             var button = new Button
@@ -313,7 +378,12 @@ namespace ToDoApp.Forms
                 .ThenBy(todo => todo.Priority)
                 .ToList();
 
-            string[] statusHeaders = { "Сегодня", "В планах", "Все (кроме завершённых)", "Завершено" };
+            string[] statusHeaders = {
+                Resource.StatusToday,
+                Resource.StatusPlanned,
+                Resource.StatusAll,
+                Resource.StatusCompleted
+            };
 
             int yOffset = 10;
             int groupBoxHeight = 90;

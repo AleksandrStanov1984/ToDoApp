@@ -59,8 +59,11 @@ namespace ToDoApp
         // 
         private void BtnUpdateToDo_Click(object sender, EventArgs e)
         {
-            // Создаем экземпляр класса UpdateToDo_Form
-            UpdateToDo_Form updateToDo = new(Convert.ToInt32(((Button)sender).Tag));
+            UpdateToDo_Form updateToDo = new(
+                todo, 
+                Convert.ToInt32(((Button)sender).Tag)
+            );
+
             updateToDo.ShowDialog();
 
             // Обновляем список задач после создания новой задачи
