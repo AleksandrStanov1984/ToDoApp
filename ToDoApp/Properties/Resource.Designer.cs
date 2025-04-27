@@ -61,6 +61,33 @@ namespace ToDoApp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Закрыть.
+        /// </summary>
+        internal static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Создать.
+        /// </summary>
+        internal static string Create {
+            get {
+                return ResourceManager.GetString("Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Описание.
+        /// </summary>
+        internal static string Description {
+            get {
+                return ResourceManager.GetString("Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Все (кроме завершённых).
         /// </summary>
         internal static string StatusAll {
@@ -93,6 +120,15 @@ namespace ToDoApp.Properties {
         internal static string StatusToday {
             get {
                 return ResourceManager.GetString("StatusToday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обновить.
+        /// </summary>
+        internal static string Update {
+            get {
+                return ResourceManager.GetString("Update", resourceCulture);
             }
         }
     }

@@ -117,6 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Close" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Создать</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Описание</value>
+  </data>
   <data name="StatusAll" xml:space="preserve">
     <value>Все (кроме завершённых)</value>
   </data>
@@ -128,5 +137,8 @@
   </data>
   <data name="StatusToday" xml:space="preserve">
     <value>Сегодня</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Обновить</value>
   </data>
 </root>

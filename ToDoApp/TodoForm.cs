@@ -1,144 +1,70 @@
-﻿using CustomControls;
-using System.Windows.Forms;
+﻿using Todo.Enums;
+using Todo.TimerToDo;
+using ToDoApp.Forms;
 using ToDo = Todo.ToDo;
 using TodoItem = DbLibrary.Models.TodoItem;
-using ToDoApp.Forms;
-using Todo.Enums;
-using Todo.TimerToDo;
 
 namespace ToDoApp
 {
     public partial class TodoForm : Form
     {
-        // Создаем экземпляр класса Todo
-        public ToDo todo = new(); 
+        /// <summary>
+        /// Создаем экземпляр класса Todo
+        /// <summary>
+        public ToDo _todo = new();
 
-        // Создаем экземпляр класса TodoStatusChecker
+        /// <summary>
+        /// Создаем экземпляр класса TodoStatusChecker
+        /// <summary> 
         private readonly TodoStatusChecker checker = new();
 
+        /// <summary>
+        /// Constructor for TodoForm
+        /// <summary>
         public TodoForm()
         {
             // Инициализируем компоненты формы
             InitializeComponent(); 
 
             UpdateToDoList(); 
-
-            /* RoundedButton button1 = new RoundedButton
-            {
-                Location = new Point(30, 50),
-                Name = "button1",
-                Size = new Size(100, 50),
-                TabIndex = 1,
-                Text = "Круглая кнопка",
-                UseVisualStyleBackColor = true,
-                BackColor = Color.LightBlue,
-                BorderRadius = 25 // Радиус скругления
-            };
-
-            this.Controls.Add(button1);
-            */
         }
 
-        // 
         public void TodoForm_Load(object sender, EventArgs e)
         {
-            //checker.Start();
+            checker.Start();
         }
 
-        // 
         private void BtnCreateNewToDo_Click(object sender, EventArgs e)
         {
-            CreateOrUpdateToDo_Form createNewToDo = new(Convert.ToBoolean(((Button)sender).TabIndex));
+            // Создаем экземпляр формы для создания новой задачи
+            CreateOrUpdateToDo_Form createNewToDo = new();
 
+            // Отображаем форму для создания новой задачи
             createNewToDo.ShowDialog();
 
             // Обновляем список задач после создания новой задачи
             ClearAndUpdateForm();
         }
 
-        // 
         private void BtnUpdateToDo_Click(object sender, EventArgs e)
         {
+            // Получаем индекс задачи, которую нужно обновить из тега кнопки и создаем экземпляр формы для обновления задачи
             UpdateToDo_Form updateToDo = new(
-                todo, 
+                _todo, 
                 Convert.ToInt32(((Button)sender).Tag)
             );
 
+            // Отображаем форму для обновления задачи
             updateToDo.ShowDialog();
 
             // Обновляем список задач после создания новой задачи
             ClearAndUpdateForm();
         }
 
-        //public void UpdateToDoList()
-        //{
-        //    // Получаем задачи, сгруппированные по статусам:
-        //    // [0] — Сегодня, [1] — В планах, [2] — Все, [3] — Завершено
-        //    List<TodoItem>[] grouped = todo.GetToDoList();
-
-        //    // Обработка каждой статусной группы по очереди
-        //    for (int i = 0; i < grouped.Length; i++)
-        //    {
-        //        var todos = grouped[i];
-
-        //        var countsByPriority = todos
-        //            .GroupBy(todo => (PriorityToDo)todo.Priority)
-        //            .ToDictionary(g => g.Key, g => g.Count());
-
-        //        // Обновляем соответствующие лейблы в зависимости от группы
-        //        foreach ((PriorityToDo priority, int count) in countsByPriority)
-        //        {
-
-        //            switch (i)
-        //            {
-        //                case 0: // Сегодня
-        //                    switch (priority)
-        //                    {
-        //                        case PriorityToDo.Low: labelLowCounterPriorityToday.Text = count.ToString(); break;
-        //                        case PriorityToDo.Medium: labelMediumCounterPriorityToday.Text = count.ToString(); break;
-        //                        case PriorityToDo.High: labelHighCounterPriorityToday.Text = count.ToString(); break;
-        //                        case PriorityToDo.Critical: labelCriticalCounterPriorityToday.Text = count.ToString(); break;
-        //                    }
-        //                    break;
-
-        //                case 1: // В планах
-        //                    switch (priority)
-        //                    {
-        //                        case PriorityToDo.Low: labelLowCounterPriorityInPlans.Text = count.ToString(); break;
-        //                        case PriorityToDo.Medium: labelMediumCounterPriorityInPlans.Text = count.ToString(); break;
-        //                        case PriorityToDo.High: labelHighCounterPriorityInPlans.Text = count.ToString(); break;
-        //                        case PriorityToDo.Critical: labelCriticalCounterPriorityInPlans.Text = count.ToString(); break;
-        //                    }
-        //                    break;
-
-        //                case 2: // Все
-        //                    switch (priority)
-        //                    {
-        //                        case PriorityToDo.Low: labelLowCounterPriorityAll.Text = count.ToString(); break;
-        //                        case PriorityToDo.Medium: labelMediumCounterPriorityAll.Text = count.ToString(); break;
-        //                        case PriorityToDo.High: labelHighCounterPriorityAll.Text = count.ToString(); break;
-        //                        case PriorityToDo.Critical: labelCriticalCounterPriorityAll.Text = count.ToString(); break;
-        //                    }
-        //                    break;
-
-        //                case 3: // Завершено
-        //                    switch (priority)
-        //                    {
-        //                        case PriorityToDo.Low: labelLowCounterPriorityClosed.Text = count.ToString(); break;
-        //                        case PriorityToDo.Medium: labelMediumCounterPriorityClosed.Text = count.ToString(); break;
-        //                        case PriorityToDo.High: labelHighCounterPriorityClosed.Text = count.ToString(); break;
-        //                        case PriorityToDo.Critical: labelCriticalCounterPriorityClosed.Text = count.ToString(); break;
-        //                    }
-        //                    break;
-        //            }
-        //        }
-        //    }
-        //}
-
         public void RefreshTasks()
         {
             // Получаем обновлённый список задач
-            List<TodoItem>[] grouped = todo.GetToDoList();
+            List<TodoItem>[] grouped = _todo.GetToDoList();
 
             // Перерисовываем задачи в groupBox
             UpdateToDoList();
@@ -171,54 +97,52 @@ namespace ToDoApp
             this.RefreshTasks(); // Обновляет форму
         }
 
-
-
         public void UpdateToDoList()
         {
-            // Получаем задачи, сгруппированные по статусам:
-            // [0] — Сегодня, [1] — В планах, [2] — Все, [3] — Завершено
-            List<TodoItem>[] grouped = todo.GetToDoList();
+            // Получаем задачи, сгруппированные по статусам: [0] — Сегодня, [1] — В планах, [2] — Все, [3] — Завершено
+            List<TodoItem>[] grouped = _todo.GetToDoList();
 
             // Словарь для отображения лейблов в зависимости от статуса и приоритета
             var labelDictionary = new Dictionary<int, Dictionary<PriorityToDo, Label>>()
-    {
-        { 0, new Dictionary<PriorityToDo, Label> // Сегодня
             {
-                { PriorityToDo.Low, labelLowCounterPriorityToday },
-                { PriorityToDo.Medium, labelMediumCounterPriorityToday },
-                { PriorityToDo.High, labelHighCounterPriorityToday },
-                { PriorityToDo.Critical, labelCriticalCounterPriorityToday }
-            }
-        },
-        { 1, new Dictionary<PriorityToDo, Label> // В планах
-            {
-                { PriorityToDo.Low, labelLowCounterPriorityInPlans },
-                { PriorityToDo.Medium, labelMediumCounterPriorityInPlans },
-                { PriorityToDo.High, labelHighCounterPriorityInPlans },
-                { PriorityToDo.Critical, labelCriticalCounterPriorityInPlans }
-            }
-        },
-        { 2, new Dictionary<PriorityToDo, Label> // Все
-            {
-                { PriorityToDo.Low, labelLowCounterPriorityAll },
-                { PriorityToDo.Medium, labelMediumCounterPriorityAll },
-                { PriorityToDo.High, labelHighCounterPriorityAll },
-                { PriorityToDo.Critical, labelCriticalCounterPriorityAll }
-            }
-        },
-        { 3, new Dictionary<PriorityToDo, Label> // Завершено
-            {
-                { PriorityToDo.Low, labelLowCounterPriorityClosed },
-                { PriorityToDo.Medium, labelMediumCounterPriorityClosed },
-                { PriorityToDo.High, labelHighCounterPriorityClosed },
-                { PriorityToDo.Critical, labelCriticalCounterPriorityClosed }
-            }
-        }
-    };
+                { 0, new Dictionary<PriorityToDo, Label> // Сегодня
+                    {
+                        { PriorityToDo.Low, labelLowCounterPriorityToday },
+                        { PriorityToDo.Medium, labelMediumCounterPriorityToday },
+                        { PriorityToDo.High, labelHighCounterPriorityToday },
+                        { PriorityToDo.Critical, labelCriticalCounterPriorityToday }
+                    }
+                },
+                { 1, new Dictionary<PriorityToDo, Label> // В планах
+                    {
+                        { PriorityToDo.Low, labelLowCounterPriorityInPlans },
+                        { PriorityToDo.Medium, labelMediumCounterPriorityInPlans },
+                        { PriorityToDo.High, labelHighCounterPriorityInPlans },
+                        { PriorityToDo.Critical, labelCriticalCounterPriorityInPlans }
+                    }
+                },
+                { 2, new Dictionary<PriorityToDo, Label> // Все
+                    {
+                        { PriorityToDo.Low, labelLowCounterPriorityAll },
+                        { PriorityToDo.Medium, labelMediumCounterPriorityAll },
+                        { PriorityToDo.High, labelHighCounterPriorityAll },
+                        { PriorityToDo.Critical, labelCriticalCounterPriorityAll }
+                    }
+                },
+                { 3, new Dictionary<PriorityToDo, Label> // Завершено
+                    {
+                        { PriorityToDo.Low, labelLowCounterPriorityClosed },
+                        { PriorityToDo.Medium, labelMediumCounterPriorityClosed },
+                        { PriorityToDo.High, labelHighCounterPriorityClosed },
+                        { PriorityToDo.Critical, labelCriticalCounterPriorityClosed }
+                    }
+                }
+            };
 
             // Обработка каждой статусной группы по очереди
             for (int i = 0; i < grouped.Length; i++)
             {
+                // Получаем задачи для текущей группы
                 var todos = grouped[i];
 
                 // Группировка задач по приоритетам
@@ -237,6 +161,5 @@ namespace ToDoApp
                 }
             }
         }
-
     }
 }
