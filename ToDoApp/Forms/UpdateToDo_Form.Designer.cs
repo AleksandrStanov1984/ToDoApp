@@ -104,6 +104,7 @@
             Controls.Add(groupBoxUpdateTask);
             Name = "UpdateToDo_Form";
             Text = "Обновить событие";
+            Load += UpdateToDo_Form_Load;
             groupBoxSort.ResumeLayout(false);
             groupBoxSort.PerformLayout();
             ResumeLayout(false);

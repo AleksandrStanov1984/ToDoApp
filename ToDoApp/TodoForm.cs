@@ -1,6 +1,7 @@
 ﻿using Todo.Enums;
 using Todo.TimerToDo;
 using ToDoApp.Forms;
+using ToDoApp.Helpers;
 using ToDo = Todo.ToDo;
 using TodoItem = DbLibrary.Models.TodoItem;
 
@@ -29,8 +30,16 @@ namespace ToDoApp
             UpdateToDoList(); 
         }
 
+        /// <summary>
+        /// Событие загрузки формы
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void TodoForm_Load(object sender, EventArgs e)
         {
+            // Устанавливаем якоря для элементов управления
+            FormHelper.SetAnchors(this);
+
             checker.Start();
         }
 

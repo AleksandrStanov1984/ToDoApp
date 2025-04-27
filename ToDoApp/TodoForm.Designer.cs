@@ -720,6 +720,7 @@
             ForeColor = Color.LawnGreen;
             Name = "TodoForm";
             Text = "ToDo App";
+            Load += TodoForm_Load;
             groupBoxToday.ResumeLayout(false);
             groupBoxToday.PerformLayout();
             groupBoxPriorityCounterToday.ResumeLayout(false);

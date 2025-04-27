@@ -79,6 +79,15 @@ namespace ToDoApp.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Дата события.
+        /// </summary>
+        internal static string DateEvent {
+            get {
+                return ResourceManager.GetString("DateEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Описание.
         /// </summary>
         internal static string Description {

@@ -130,7 +130,7 @@
             dateTimePickerEvent.Size = new Size(200, 29);
             dateTimePickerEvent.TabIndex = 10;
             // 
-            // CreateUpdateToDo_Form
+            // CreateOrUpdateToDo_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -144,8 +144,9 @@
             Controls.Add(textBoxDescription);
             Controls.Add(labelNameOrThema);
             Controls.Add(textBoxThema);
-            Name = "CreateUpdateToDo_Form";
+            Name = "CreateOrUpdateToDo_Form";
             Text = "Создать или обновить событие";
+            Load += CreateNewToDo_Form_Load;
             ResumeLayout(false);
             PerformLayout();
         }

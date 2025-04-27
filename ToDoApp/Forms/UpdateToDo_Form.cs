@@ -4,6 +4,7 @@ using DbLibrary.Models;
 using ToDoApp.Properties;
 using ToDo = Todo.ToDo;
 using TDTaskPriority = Todo.Enums.PriorityToDo;
+using ToDoApp.Helpers;
 
 namespace ToDoApp.Forms
 {
@@ -54,7 +55,18 @@ namespace ToDoApp.Forms
         }
 
         /// <summary>
-        /// 
+        /// Событие загрузки формы
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void UpdateToDo_Form_Load(object sender, EventArgs e)
+        {
+            // Устанавливаем якоря для элементов управления
+            FormHelper.SetAnchors(this);
+        }
+
+        /// <summary>
+        /// Взять название статусов
         /// </summary>
         /// <returns></returns>
         private static string[] GetStatusHeaders()
@@ -271,16 +283,35 @@ namespace ToDoApp.Forms
                 Tag = todo.Id,
                 ForeColor = borderColor,
                 BackColor = backgroundColor,
-                FlatStyle = FlatStyle.Flat
+                FlatStyle = FlatStyle.Flat,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right 
             };
 
             // Устанавливаем цвет рамки
             taskBox.Controls.Add(CreateDescriptionLabel(todo.Description));
             taskBox.Controls.Add(CreateUpdateButton(todo.Id));
             taskBox.Controls.Add(CreateCloseButton(todo.Id));
+            taskBox.Controls.Add(CreateDateLabel(todo.DateTimeEvent));
 
             // Устанавливаем цвет рамки
             return taskBox;
+        }
+
+        /// <summary>
+        /// Создаем метку с датой события
+        /// </summary>
+        /// <param name="dateTimeEvent"></param>
+        /// <returns></returns>
+        private static Label CreateDateLabel(DateTime dateTimeEvent)
+        {
+            // Создаем метку для даты события
+            return new Label
+            {
+                Text = $"{Resource.DateEvent}: {dateTimeEvent:dd.MM.yyyy HH:mm}",
+                Location = new Point(10, 45),
+                AutoSize = true,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right 
+            };
         }
 
         // Метод для создания метки с описанием задачи
@@ -291,7 +322,8 @@ namespace ToDoApp.Forms
             {
                 Text = $"{Resource.Description}: {description}",
                 Location = new Point(10, 20),
-                AutoSize = true
+                AutoSize = true,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
         }
 
@@ -316,8 +348,9 @@ namespace ToDoApp.Forms
             var button = new Button
             {
                 Text = Resource.Update,
-                Location = new Point(10, 50),
-                Tag = todoId
+                Location = new Point(10, 70),
+                Tag = todoId,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
 
             // Подключаем обработчик события нажатия на кнопку
@@ -333,8 +366,9 @@ namespace ToDoApp.Forms
             var button = new Button
             {
                 Text = Resource.Close,
-                Location = new Point(100, 50),
-                Tag = todoId
+                Location = new Point(100, 70),
+                Tag = todoId,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
 
             // Подключаем обработчик события нажатия на кнопку
@@ -394,7 +428,8 @@ namespace ToDoApp.Forms
                 AutoScroll = true,
                 Width = groupBoxUpdateTask.Width - 20,
                 Height = groupBoxUpdateTask.Height - 50,
-                Location = new Point(10, 40)
+                Location = new Point(10, 40),
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
             };
         }
 
@@ -403,6 +438,35 @@ namespace ToDoApp.Forms
         {
             // Закрываем форму
             this.Close(); 
+        }
+
+        /// <summary>
+        /// Устанавливаем якоря для элементов управления
+        /// </summary>
+        /// <param name="parent"></param>
+        private void SetAnchors(Control parent)
+        {
+            foreach (Control control in parent.Controls)
+            {
+                if (control is GroupBox || control is Panel)
+                {
+                    control.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                }
+                else if (control is Button)
+                {
+                    control.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+                }
+                else if (control is Label)
+                {
+                    control.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                }
+
+                // Если внутри элемента тоже есть элементы (например, GroupBox содержит кнопки)
+                if (control.HasChildren)
+                {
+                    SetAnchors(control);
+                }
+            }
         }
     }
 }
