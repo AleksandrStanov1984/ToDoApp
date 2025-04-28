@@ -308,7 +308,7 @@ namespace ToDoApp.Forms
             return new Label
             {
                 Text = $"{Resource.DateEvent}: {dateTimeEvent:dd.MM.yyyy HH:mm}",
-                Location = new Point(10, 45),
+                Location = new Point(10, 50),
                 AutoSize = true,
                 Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right 
             };
